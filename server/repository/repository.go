@@ -6,8 +6,14 @@ import (
 )
 
 type Authentication interface {
-	CreateUser(user store.User) (int, error)
-	GetUser(username, password string) (store.User, error)
+	CreateCustomer(user store.User) (int, error)
+	GetCustomer(username, password string) (store.User, error)
+	CreateAdmin(user store.User) (int, error)
+	GetAdmin(username, password string) (store.User, error)
+}
+
+type Authorization interface{
+	CurrentUserIsAdmin(userId int) (bool, error)
 }
 
 
@@ -27,6 +33,7 @@ type Manufacturer interface {
 	Update(manufacturerId int, input store.UpdateInput) error
 }
 
+
 type Product interface {
 	Create(product store.Product) (int, error)
 	GetAll() ([]store.Product, error)
@@ -45,6 +52,7 @@ type Cart interface{
 
 type Repository struct {
 	Authentication 
+	Authorization
 	Catalog
 	Manufacturer
 	Product
@@ -54,6 +62,7 @@ type Repository struct {
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authentication: NewAuthPostgresSQL(db),
+		Authorization: NewAuthorizationPostgresSQL(db),
 		Catalog: NewStoreCatalogPostgres(db),
 		Manufacturer: NewStoreManufacturerPostgres(db),
 		Product: NewProductPostgres(db),

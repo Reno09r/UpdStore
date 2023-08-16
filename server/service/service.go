@@ -6,9 +6,14 @@ import (
 )
 
 type Authentication interface{
-	CreateUser(user store.User) (int, error)
-	GenerateToken(username, password string) (string, error)
-	ParseToken(token string) (int, error)
+	CreateCustomer(user store.User) (int, error)
+	CreateAdmin(user store.User) (int, error)
+	GenerateToken(username, password string, isAdmin bool) (string, error)
+	ParseToken(token string, isAdmin bool) (int, error)
+}
+
+type Authorization interface{
+	CurrentUserIsAdmin(userId int) (bool, error)
 }
 
 type Catalog interface {
@@ -45,6 +50,7 @@ type Cart interface{
 
 type Service struct{
 	Authentication 
+	Authorization
 	Catalog
 	Manufacturer
 	Product
@@ -54,6 +60,7 @@ type Service struct{
 func NewService(repos *repository.Repository) *Service{
 	return &Service{
 		Authentication: NewAuthService(repos.Authentication),
+		Authorization: NewAuthorizationService(repos.Authorization),
 		Catalog: NewStoreCatalog(repos.Catalog),
 		Manufacturer: NewStoreManufacturer(repos.Manufacturer),
 		Product: NewStoreProduct(repos.Product),

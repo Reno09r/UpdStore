@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS purchase_items;
 DROP TABLE IF EXISTS purchases;
 DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS customers;
-DROP TABLE IF EXISTS stores;
+DROP TABLE IF EXISTS usernames;
 DROP TABLE IF EXISTS price_change;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS manufacturers;

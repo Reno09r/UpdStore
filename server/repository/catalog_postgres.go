@@ -53,12 +53,12 @@ func (r *StoreCatalogPostgres)GetById(CatalogId int) (store.Catalog, error){
 
 func (r *StoreCatalogPostgres)Delete(CatalogId int) error{
 	var catalog store.Catalog
-	query := fmt.Sprintf("DELETE FROM %s WHERE catalog_id = $1", CatalogTable)
 	queryCheck := fmt.Sprintf("SELECT * FROM %s WHERE catalog_id = $1", CatalogTable)
 	err := r.db.Get(&catalog, queryCheck, CatalogId)
 	if err != nil {
 		return errors.New("Delete by non-existent CatalogId")
 	}
+	query := fmt.Sprintf("DELETE FROM %s WHERE catalog_id = $1", CatalogTable)
 	_, err = r.db.Exec(query, CatalogId)
 	return err
 }

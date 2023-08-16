@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
 	store "github.com/Reno09r/Store"
 	"github.com/jmoiron/sqlx"
 )
@@ -33,7 +34,7 @@ func (r *ProductPostgres) Create(product store.Product) (int, error) {
 		return 0, err
 	}
 	createListItemsQuery := fmt.Sprintf("INSERT INTO %s (product_id, date_price_change, new_price) values ($1, NOW(), $2)", PriceTable)
-	_, err = tx.Exec(createListItemsQuery, productId,  product.Price)
+	_, err = tx.Exec(createListItemsQuery, productId, product.Price)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
@@ -42,7 +43,7 @@ func (r *ProductPostgres) Create(product store.Product) (int, error) {
 	return productId, tx.Commit()
 }
 
-func (r *ProductPostgres) GetAll() ([]store.Product, error){
+func (r *ProductPostgres) GetAll() ([]store.Product, error) {
 	var products []store.Product
 	query := fmt.Sprintf(`
 	SELECT p.product_id, p.product_name, m.manufacturer_name, c.catalog_name, pc.new_price
@@ -66,7 +67,6 @@ func (r *ProductPostgres) GetAll() ([]store.Product, error){
 	err := r.db.Select(&products, query)
 	return products, err
 }
-	
 
 func (r *ProductPostgres) GetById(productId int) (store.Product, error) {
 	var product store.Product
@@ -95,14 +95,13 @@ func (r *ProductPostgres) GetById(productId int) (store.Product, error) {
 	err := r.db.Get(&product, query, productId)
 	return product, err
 }
-	
 
-func (r *ProductPostgres) Delete(productId int) error{
+func (r *ProductPostgres) Delete(productId int) error {
 	var product store.Product
 	queryCheck := fmt.Sprintf("SELECT product_name FROM %s WHERE product_id = $1", ProductsTable)
 	err := r.db.Get(&product, queryCheck, productId)
 	if err != nil {
-		return errors.New("Deletion by non-existent product ID")
+		return errors.New("deletion by non-existent product id")
 	}
 	query := fmt.Sprintf("DELETE FROM %s WHERE product_id  = $1", PriceTable)
 	_, err = r.db.Exec(query, productId)
@@ -114,9 +113,7 @@ func (r *ProductPostgres) Delete(productId int) error{
 	return err
 }
 
-	
-
-func (r *ProductPostgres) Update(productId int, input store.UpdateProductInput) error{
+func (r *ProductPostgres) Update(productId int, input store.UpdateProductInput) error {
 	var product store.Product
 	queryCheck := fmt.Sprintf("SELECT product_name FROM %s WHERE product_id = $1", ProductsTable)
 	err := r.db.Get(&product, queryCheck, productId)
@@ -142,7 +139,7 @@ func (r *ProductPostgres) Update(productId int, input store.UpdateProductInput) 
 		args = append(args, catalog.Id)
 		argId++
 	}
-	
+
 	var manufacturer store.Manufacturer
 	queryCheck = fmt.Sprintf("SELECT manufacturer_id FROM %s WHERE manufacturer_name = $1", ManufacturerTable)
 	err = r.db.Get(&manufacturer, queryCheck, input.ManufacturerName)
@@ -178,7 +175,7 @@ func (r *ProductPostgres) Update(productId int, input store.UpdateProductInput) 
 	if err != nil {
 		return err
 	}
-	
+
 	if input.Price != nil {
 		insertPriceQuery := fmt.Sprintf("INSERT INTO %s (product_id, new_price, date_price_change) VALUES ($1, $2, NOW())", PriceTable)
 		_, err = tx.Exec(insertPriceQuery, productId, *input.Price)
@@ -191,8 +188,8 @@ func (r *ProductPostgres) Update(productId int, input store.UpdateProductInput) 
 }
 
 func (r *ProductPostgres) GetAllByManufacturer(manufacturerID int) ([]store.Product, error) {
-    var products []store.Product
-    query := `
+	var products []store.Product
+	query := `
         SELECT p.product_id, p.product_name, m.manufacturer_name, c.catalog_name, pc.new_price
         FROM products p
         JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id
@@ -207,18 +204,18 @@ func (r *ProductPostgres) GetAllByManufacturer(manufacturerID int) ([]store.Prod
         ORDER BY pc.date_price_change DESC;
     `
 
-    err := r.db.Select(&products, query, manufacturerID)
-    if err != nil {
-        return nil, err
-    }
+	err := r.db.Select(&products, query, manufacturerID)
+	if err != nil {
+		return nil, err
+	}
 
-    return products, nil
+	return products, nil
 }
 
 func (r *ProductPostgres) GetAllByCatalog(catalogID int) ([]store.Product, error) {
-    var products []store.Product
+	var products []store.Product
 
-    query := `
+	query := `
         SELECT p.product_id, p.product_name, m.manufacturer_name, c.catalog_name, pc.new_price
         FROM products p
         JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id
@@ -233,10 +230,10 @@ func (r *ProductPostgres) GetAllByCatalog(catalogID int) ([]store.Product, error
         ORDER BY pc.date_price_change DESC;
     `
 
-    err := r.db.Select(&products, query, catalogID)
-    if err != nil {
-        return nil, err
-    }
+	err := r.db.Select(&products, query, catalogID)
+	if err != nil {
+		return nil, err
+	}
 
-    return products, nil
+	return products, nil
 }

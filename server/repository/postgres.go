@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	UsersTable      = "customers"
+	CustomersTable      = "customers"
 	UsernamesTable = "usernames"
+	AdminsTable = "admins"
 	ProductsTable  = "products"
 	ManufacturerTable = "manufacturers"
 	CatalogTable = "catalogs"
