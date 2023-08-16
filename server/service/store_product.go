@@ -42,5 +42,5 @@ func (s *StoreProduct) GetAllByManufacturer(manufacturerID int) ([]store.Product
 }
 
 func (s *StoreProduct) GetAllByCatalog(catalogID int) ([]store.Product, error) {
-	return s.repo.GetAllByCatalog(catalogID)
+    return s.repo.GetAllByCatalog(catalogID)
 }

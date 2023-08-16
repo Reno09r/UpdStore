@@ -7,7 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) signUp(c *gin.Context) {
+
+
+func (h *Handler) signUp(c *gin.Context){
 	var input store.User
 
 	if err := c.BindJSON(&input); err != nil {
@@ -26,12 +28,14 @@ func (h *Handler) signUp(c *gin.Context) {
 	})
 }
 
-type signInInput struct {
+
+
+type signInInput struct{
 	Username string `json:"username" bilding:"required"`
 	Password string `json:"password" bilding:"required"`
 }
 
-func (h *Handler) signIn(c *gin.Context) {
+func (h *Handler) signIn(c *gin.Context){
 	var input signInInput
 
 	if err := c.BindJSON(&input); err != nil {
@@ -50,7 +54,7 @@ func (h *Handler) signIn(c *gin.Context) {
 	})
 }
 
-func (h *Handler) signUpAdmin(c *gin.Context) {
+func (h *Handler) signUpAdmin(c *gin.Context){
 	var input store.User
 
 	if err := c.BindJSON(&input); err != nil {
@@ -69,7 +73,7 @@ func (h *Handler) signUpAdmin(c *gin.Context) {
 	})
 }
 
-func (h *Handler) signInAdmin(c *gin.Context) {
+func (h *Handler) signInAdmin(c *gin.Context){
 	var input signInInput
 
 	if err := c.BindJSON(&input); err != nil {
@@ -87,3 +91,4 @@ func (h *Handler) signInAdmin(c *gin.Context) {
 		"token": token,
 	})
 }
+

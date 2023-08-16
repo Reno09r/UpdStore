@@ -18,7 +18,7 @@ func NewStoreCatalogPostgres(db *sqlx.DB) *StoreCatalogPostgres {
 	return &StoreCatalogPostgres{db: db}
 }
 
-func (r *StoreCatalogPostgres) Create(catalog store.Catalog) (int, error) {
+func (r *StoreCatalogPostgres) Create(catalog store.Catalog) (int, error){
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -35,14 +35,14 @@ func (r *StoreCatalogPostgres) Create(catalog store.Catalog) (int, error) {
 	return id, tx.Commit()
 }
 
-func (r *StoreCatalogPostgres) GetAll() ([]store.Catalog, error) {
+func (r *StoreCatalogPostgres)GetAll() ([]store.Catalog, error){
 	var catalogs []store.Catalog
 	query := fmt.Sprintf("SELECT * FROM %s", CatalogTable)
 	err := r.db.Select(&catalogs, query)
 	return catalogs, err
 }
 
-func (r *StoreCatalogPostgres) GetById(CatalogId int) (store.Catalog, error) {
+func (r *StoreCatalogPostgres)GetById(CatalogId int) (store.Catalog, error){
 	var catalog store.Catalog
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE catalog_id = $1", CatalogTable)
@@ -51,7 +51,7 @@ func (r *StoreCatalogPostgres) GetById(CatalogId int) (store.Catalog, error) {
 	return catalog, err
 }
 
-func (r *StoreCatalogPostgres) Delete(CatalogId int) error {
+func (r *StoreCatalogPostgres)Delete(CatalogId int) error{
 	var catalog store.Catalog
 	queryCheck := fmt.Sprintf("SELECT * FROM %s WHERE catalog_id = $1", CatalogTable)
 	err := r.db.Get(&catalog, queryCheck, CatalogId)
@@ -63,7 +63,7 @@ func (r *StoreCatalogPostgres) Delete(CatalogId int) error {
 	return err
 }
 
-func (r *StoreCatalogPostgres) Update(CatalogId int, input store.UpdateInput) error {
+func (r *StoreCatalogPostgres)Update(CatalogId int, input store.UpdateInput) error{
 	var manufacturer store.Catalog
 	queryCheck := fmt.Sprintf("SELECT * FROM %s WHERE catalog_id = $1", CatalogTable)
 	err := r.db.Get(&manufacturer, queryCheck, CatalogId)
@@ -84,7 +84,7 @@ func (r *StoreCatalogPostgres) Update(CatalogId int, input store.UpdateInput) er
 
 	query := fmt.Sprintf("UPDATE %s ct SET %s WHERE ct.catalog_id =$%d",
 		CatalogTable, setQuery, argId)
-
+	
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %s", arg)
 	_, err = r.db.Exec(query, arg, CatalogId)
