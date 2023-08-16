@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) insertProductInCart(c *gin.Context){
+func (h *Handler) insertProductInCart(c *gin.Context) {
 	var input store.Cart
 	customerId, err := getUserId(c)
 	if err != nil {
@@ -26,15 +26,15 @@ func (h *Handler) insertProductInCart(c *gin.Context){
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-        "id": id,
-    })
+		"id": id,
+	})
 }
 
 type getAllProductsInCartResponse struct {
 	Data []store.Cart `json:"data"`
 }
 
-func (h *Handler) getProductsFromCart(c *gin.Context){
+func (h *Handler) getProductsFromCart(c *gin.Context) {
 	customerId, err := getUserId(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -50,7 +50,7 @@ func (h *Handler) getProductsFromCart(c *gin.Context){
 	})
 }
 
-func (h *Handler) deleteProductFromCart(c *gin.Context){
+func (h *Handler) deleteProductFromCart(c *gin.Context) {
 	customerId, err := getUserId(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())

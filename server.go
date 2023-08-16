@@ -13,7 +13,7 @@ type Server struct {
 func (s *Server) Run(port string, handler http.Handler) error {
 	s.httpServer = &http.Server{
 		Addr:           ":" + port,
-		Handler: handler,
+		Handler:        handler,
 		MaxHeaderBytes: 1 << 20, //1MB
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,

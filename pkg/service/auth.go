@@ -13,32 +13,32 @@ import (
 
 const (
 	signingKey = "grkjk#4#%35FSFJ1ja#4353KSFjH"
-	tokenTTL = 24 * time.Hour
+	tokenTTL   = 24 * time.Hour
 )
 
-type tokenClaims struct{
+type tokenClaims struct {
 	jwt.StandardClaims
 	CustomerId int `json:"customer_id"`
 }
 
-type adminTokenClaims struct{
+type adminTokenClaims struct {
 	jwt.StandardClaims
 	AdminId int `json:"admin_id"`
 }
 
 type AuthService struct {
-	repo repository.Authentication 
+	repo repository.Authentication
 }
 
-func NewAuthService(repo repository.Authentication ) *AuthService{
+func NewAuthService(repo repository.Authentication) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func(s *AuthService) CreateCustomer(user store.User) (int, error){
+func (s *AuthService) CreateCustomer(user store.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateCustomer(user)
 }
-func(s *AuthService) CreateAdmin(user store.User) (int, error){
+func (s *AuthService) CreateAdmin(user store.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateAdmin(user)
 }
@@ -117,7 +117,7 @@ func (s *AuthService) ParseToken(accessToken string, isAdmin bool) (int, error) 
 	return userID, nil
 }
 
-func generatePasswordHash(password string) string{
+func generatePasswordHash(password string) string {
 	hashed_password, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		log.Panicln("Failed to generate password hash:", err)
@@ -125,4 +125,3 @@ func generatePasswordHash(password string) string{
 	return string(hashed_password)
 
 }
-

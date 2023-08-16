@@ -1,18 +1,18 @@
-package service
+package repository
 
 import (
 	"github.com/Reno09r/Store"
-	"github.com/Reno09r/Store/server/repository"
+	"github.com/jmoiron/sqlx"
 )
 
-type Authentication interface{
+type Authentication interface {
 	CreateCustomer(user store.User) (int, error)
+	GetCustomer(username, password string) (store.User, error)
 	CreateAdmin(user store.User) (int, error)
-	GenerateToken(username, password string, isAdmin bool) (string, error)
-	ParseToken(token string, isAdmin bool) (int, error)
+	GetAdmin(username, password string) (store.User, error)
 }
 
-type Authorization interface{
+type Authorization interface {
 	CurrentUserIsAdmin(userId int) (bool, error)
 }
 
@@ -32,7 +32,7 @@ type Manufacturer interface {
 	Update(manufacturerId int, input store.UpdateInput) error
 }
 
-type Product interface{
+type Product interface {
 	Create(product store.Product) (int, error)
 	GetAll() ([]store.Product, error)
 	GetById(productId int) (store.Product, error)
@@ -42,14 +42,14 @@ type Product interface{
 	GetAllByCatalog(catalogID int) ([]store.Product, error)
 }
 
-type Cart interface{
+type Cart interface {
 	Insert(input store.Cart, customerId int) (int, error)
 	Get(customerId int) ([]store.Cart, error)
 	Delete(productId, customerId int) error
 }
 
-type Service struct{
-	Authentication 
+type Repository struct {
+	Authentication
 	Authorization
 	Catalog
 	Manufacturer
@@ -57,13 +57,13 @@ type Service struct{
 	Cart
 }
 
-func NewService(repos *repository.Repository) *Service{
-	return &Service{
-		Authentication: NewAuthService(repos.Authentication),
-		Authorization: NewAuthorizationService(repos.Authorization),
-		Catalog: NewStoreCatalog(repos.Catalog),
-		Manufacturer: NewStoreManufacturer(repos.Manufacturer),
-		Product: NewStoreProduct(repos.Product),
-		Cart: NewStoreCart(repos.Cart),
+func NewRepository(db *sqlx.DB) *Repository {
+	return &Repository{
+		Authentication: NewAuthPostgresSQL(db),
+		Authorization:  NewAuthorizationPostgresSQL(db),
+		Catalog:        NewStoreCatalogPostgres(db),
+		Manufacturer:   NewStoreManufacturerPostgres(db),
+		Product:        NewProductPostgres(db),
+		Cart:           NewStoreCartPostgres(db),
 	}
 }

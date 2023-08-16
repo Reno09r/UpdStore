@@ -31,7 +31,7 @@ func (r *StoreCartPostgres) Insert(input store.Cart, customerId int) (int, error
 			tx.Rollback()
 			return 0, err
 		}
-		if input.Quantity == 0{
+		if input.Quantity == 0 {
 			input.Quantity++
 		}
 		insertToCartQuery = `
@@ -59,7 +59,7 @@ func (r *StoreCartPostgres) Insert(input store.Cart, customerId int) (int, error
 			return 0, err
 		}
 	} else {
-		if input.Quantity == 0{
+		if input.Quantity == 0 {
 			input.Quantity++
 		}
 		updateQuantity := "UPDATE purchase_items SET product_count = product_count + $1 WHERE purchase_id = $2 AND product_id = $3"

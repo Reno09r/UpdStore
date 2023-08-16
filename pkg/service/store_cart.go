@@ -13,7 +13,7 @@ func NewStoreCart(repo repository.Cart) *StoreCart {
 	return &StoreCart{repo: repo}
 }
 
-func (s *StoreCart) Insert(input store.Cart, customerId int) (int, error){
+func (s *StoreCart) Insert(input store.Cart, customerId int) (int, error) {
 	return s.repo.Insert(input, customerId)
 }
 

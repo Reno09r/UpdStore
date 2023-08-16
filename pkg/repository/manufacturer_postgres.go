@@ -18,7 +18,7 @@ func NewStoreManufacturerPostgres(db *sqlx.DB) *StoreManufacturerPostgres {
 	return &StoreManufacturerPostgres{db: db}
 }
 
-func (r *StoreManufacturerPostgres) Create(manufacturer store.Manufacturer) (int, error){
+func (r *StoreManufacturerPostgres) Create(manufacturer store.Manufacturer) (int, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -35,14 +35,14 @@ func (r *StoreManufacturerPostgres) Create(manufacturer store.Manufacturer) (int
 	return id, tx.Commit()
 }
 
-func (r *StoreManufacturerPostgres)GetAll() ([]store.Manufacturer, error){
+func (r *StoreManufacturerPostgres) GetAll() ([]store.Manufacturer, error) {
 	var manufacturers []store.Manufacturer
 	query := fmt.Sprintf("SELECT * FROM %s", ManufacturerTable)
 	err := r.db.Select(&manufacturers, query)
 	return manufacturers, err
 }
 
-func (r *StoreManufacturerPostgres)GetById(manufacturerId int) (store.Manufacturer, error){
+func (r *StoreManufacturerPostgres) GetById(manufacturerId int) (store.Manufacturer, error) {
 	var manufacturer store.Manufacturer
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE manufacturer_id = $1", ManufacturerTable)
@@ -51,7 +51,7 @@ func (r *StoreManufacturerPostgres)GetById(manufacturerId int) (store.Manufactur
 	return manufacturer, err
 }
 
-func (r *StoreManufacturerPostgres)Delete(manufacturerId int) error{
+func (r *StoreManufacturerPostgres) Delete(manufacturerId int) error {
 	var manufacturer store.Manufacturer
 	queryCheck := fmt.Sprintf("SELECT * FROM %s WHERE manufacturer_id = $1", ManufacturerTable)
 	err := r.db.Get(&manufacturer, queryCheck, manufacturerId)
@@ -63,7 +63,7 @@ func (r *StoreManufacturerPostgres)Delete(manufacturerId int) error{
 	return err
 }
 
-func (r *StoreManufacturerPostgres)Update(manufacturerId int, input store.UpdateInput) error{
+func (r *StoreManufacturerPostgres) Update(manufacturerId int, input store.UpdateInput) error {
 	var manufacturer store.Manufacturer
 	queryCheck := fmt.Sprintf("SELECT * FROM %s WHERE manufacturer_id = $1", ManufacturerTable)
 	err := r.db.Get(&manufacturer, queryCheck, manufacturerId)
@@ -83,7 +83,7 @@ func (r *StoreManufacturerPostgres)Update(manufacturerId int, input store.Update
 	setQuery := strings.Join(setValues, ", ")
 	query := fmt.Sprintf("UPDATE %s ct SET %s WHERE ct.manufacturer_id =$%d",
 		ManufacturerTable, setQuery, argId)
-	
+
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %s", arg)
 	_, err = r.db.Exec(query, arg, manufacturerId)

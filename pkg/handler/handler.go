@@ -9,7 +9,7 @@ type Handler struct {
 	services *service.Service
 }
 
-func NewHandler(services *service.Service) *Handler{
+func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
@@ -34,9 +34,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			catalog.GET("/", h.getCatalogs)
 			catalog.GET("/:id", h.getCatalogById)
 			products := catalog.Group(":id/products")
-    		{
-        		products.GET("/", h.getAllProductsByCatalog)
-    		}		
+			{
+				products.GET("/", h.getAllProductsByCatalog)
+			}
 		}
 		catalogEdit := api.Group("/catalog", h.adminIdentity)
 		{
