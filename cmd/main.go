@@ -4,9 +4,9 @@ import (
 	"os"
 
 	"github.com/Reno09r/Store"
-	"github.com/Reno09r/Store/server/handler"
-	"github.com/Reno09r/Store/server/repository"
-	"github.com/Reno09r/Store/server/service"
+	"github.com/Reno09r/Store/pkg/handler"
+	"github.com/Reno09r/Store/pkg/repository"
+	"github.com/Reno09r/Store/pkg/service"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"

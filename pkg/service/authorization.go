@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/Reno09r/Store/server/repository"
+	"github.com/Reno09r/Store/pkg/repository"
 )
 
 type AuthorizationService struct {

@@ -2,7 +2,7 @@ package service
 
 import (
 	store "github.com/Reno09r/Store"
-	"github.com/Reno09r/Store/server/repository"
+	"github.com/Reno09r/Store/pkg/repository"
 )
 
 type StoreProduct struct {
@@ -42,5 +42,5 @@ func (s *StoreProduct) GetAllByManufacturer(manufacturerID int) ([]store.Product
 }
 
 func (s *StoreProduct) GetAllByCatalog(catalogID int) ([]store.Product, error) {
-    return s.repo.GetAllByCatalog(catalogID)
+	return s.repo.GetAllByCatalog(catalogID)
 }

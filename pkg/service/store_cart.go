@@ -2,7 +2,7 @@ package service
 
 import (
 	store "github.com/Reno09r/Store"
-	"github.com/Reno09r/Store/server/repository"
+	"github.com/Reno09r/Store/pkg/repository"
 )
 
 type StoreCart struct {
@@ -13,7 +13,7 @@ func NewStoreCart(repo repository.Cart) *StoreCart {
 	return &StoreCart{repo: repo}
 }
 
-func (s *StoreCart) Insert(input store.Cart, customerId int) (int, error){
+func (s *StoreCart) Insert(input store.Cart, customerId int) (int, error) {
 	return s.repo.Insert(input, customerId)
 }
 

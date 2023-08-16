@@ -1,6 +1,5 @@
 package repository
 
-
 import (
 	"fmt"
 
@@ -8,13 +7,13 @@ import (
 )
 
 const (
-	CustomersTable      = "customers"
-	UsernamesTable = "usernames"
-	AdminsTable = "admins"
-	ProductsTable  = "products"
+	CustomersTable    = "customers"
+	UsernamesTable    = "usernames"
+	AdminsTable       = "admins"
+	ProductsTable     = "products"
 	ManufacturerTable = "manufacturers"
-	CatalogTable = "catalogs"
-	PriceTable = "price_change"
+	CatalogTable      = "catalogs"
+	PriceTable        = "price_change"
 )
 
 type Config struct {

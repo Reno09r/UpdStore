@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/Reno09r/Store/server/service"
+	"github.com/Reno09r/Store/pkg/service"
 	"github.com/gin-gonic/gin"
 )
 

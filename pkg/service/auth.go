@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Reno09r/Store"
-	"github.com/Reno09r/Store/server/repository"
+	"github.com/Reno09r/Store/pkg/repository"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
