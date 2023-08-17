@@ -6,14 +6,14 @@ import (
 )
 
 type Authentication interface {
-	CreateCustomer(user store.User) (int, error)
-	CreateAdmin(user store.User) (int, error)
-	GenerateToken(username, password string, isAdmin bool) (string, error)
-	ParseToken(token string, isAdmin bool) (int, error)
+	CreateUser(user store.User) (int, error)
+	GenerateToken(username, password string) (string, error)
+	ParseToken(token string) (int, error)
 }
 
 type Authorization interface {
 	CurrentUserIsAdmin(userId int) (bool, error)
+	CurrentUserIsCustomer(userId int) (bool, error)
 }
 
 type Catalog interface {
@@ -43,9 +43,9 @@ type Product interface {
 }
 
 type Cart interface {
-	Insert(input store.Cart, customerId int) (int, error)
-	Get(customerId int) ([]store.Cart, error)
-	Delete(productId, customerId int) error
+	Insert(input store.Cart, userId int) (int, error)
+	Get(userId int) ([]store.Cart, error)
+	Delete(productId, userId int) error
 }
 
 type Service struct {

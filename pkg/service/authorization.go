@@ -15,3 +15,7 @@ func NewAuthorizationService(repo repository.Authorization ) *AuthorizationServi
 func (s *AuthorizationService)CurrentUserIsAdmin(userId int) (bool, error){
 	return s.repo.CurrentUserIsAdmin(userId)
 }
+
+func (s *AuthorizationService)CurrentUserIsCustomer(userId int) (bool, error){
+	return s.repo.CurrentUserIsCustomer(userId)
+} 

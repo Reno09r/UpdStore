@@ -18,12 +18,7 @@ const (
 
 type tokenClaims struct{
 	jwt.StandardClaims
-	CustomerId int `json:"customer_id"`
-}
-
-type adminTokenClaims struct{
-	jwt.StandardClaims
-	AdminId int `json:"admin_id"`
+	UserId int `json:"user_id"`
 }
 
 type AuthService struct {
@@ -34,87 +29,43 @@ func NewAuthService(repo repository.Authentication ) *AuthService{
 	return &AuthService{repo: repo}
 }
 
-func(s *AuthService) CreateCustomer(user store.User) (int, error){
+func(s *AuthService) CreateUser(user store.User) (int, error){
 	user.Password = generatePasswordHash(user.Password)
-	return s.repo.CreateCustomer(user)
+	return s.repo.CreateUser(user)
 }
-func(s *AuthService) CreateAdmin(user store.User) (int, error){
-	user.Password = generatePasswordHash(user.Password)
-	return s.repo.CreateAdmin(user)
-}
-func (s *AuthService) GenerateToken(username, password string, isAdmin bool) (string, error) {
-	var user store.User
-	var err error
 
-	if isAdmin {
-		user, err = s.repo.GetAdmin(username, password)
-	} else {
-		user, err = s.repo.GetCustomer(username, password)
-	}
-
-	if err != nil {
+func (s *AuthService) GenerateToken(username, password string) (string, error){
+	user, err := s.repo.GetUser(username, password)
+	if err != nil{
 		return "", err
 	}
-
-	var claims jwt.Claims
-	if isAdmin {
-		claims = &adminTokenClaims{
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(tokenTTL).Unix(),
-				IssuedAt:  time.Now().Unix(),
-			},
-			AdminId: user.AdminId,
-		}
-	} else {
-		claims = &tokenClaims{
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(tokenTTL).Unix(),
-				IssuedAt:  time.Now().Unix(),
-			},
-			CustomerId: user.Id,
-		}
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+		jwt.StandardClaims{
+		ExpiresAt: time.Now().Add(tokenTTL).Unix(),
+		IssuedAt: time.Now().Unix(),
+		},
+		user.Id,
+	})
 	return token.SignedString([]byte(signingKey))
 }
 
-func (s *AuthService) ParseToken(accessToken string, isAdmin bool) (int, error) {
-	var claims jwt.Claims
-	if isAdmin {
-		claims = &adminTokenClaims{}
-	} else {
-		claims = &tokenClaims{}
-	}
-
-	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+func (s *AuthService) ParseToken(accessToken string) (int, error){
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok{
 			return nil, errors.New("invalid signing method")
 		}
 
 		return []byte(signingKey), nil
 	})
-
 	if err != nil {
 		return 0, err
 	}
-
-	var userID int
-	if isAdmin {
-		adminClaims, ok := token.Claims.(*adminTokenClaims)
-		if !ok {
-			return 0, errors.New("token claims are not of type *adminTokenClaims")
-		}
-		userID = adminClaims.AdminId
-	} else {
-		userClaims, ok := token.Claims.(*tokenClaims)
-		if !ok {
-			return 0, errors.New("token claims are not of type *tokenClaims")
-		}
-		userID = userClaims.CustomerId
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok{
+		return 0, errors.New("token claims ate not of type *tokenClaims")
 	}
 
-	return userID, nil
+	return claims.UserId, nil
 }
 
 func generatePasswordHash(password string) string{

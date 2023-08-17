@@ -10,7 +10,7 @@ import (
 
 func (h *Handler) insertProductInCart(c *gin.Context){
 	var input store.Cart
-	customerId, err := getUserId(c)
+	userId, err := getUserId(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -19,7 +19,7 @@ func (h *Handler) insertProductInCart(c *gin.Context){
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	id, err := h.services.Cart.Insert(input, customerId)
+	id, err := h.services.Cart.Insert(input, userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -35,12 +35,12 @@ type getAllProductsInCartResponse struct {
 }
 
 func (h *Handler) getProductsFromCart(c *gin.Context){
-	customerId, err := getUserId(c)
+	userId, err := getUserId(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	lists, err := h.services.Cart.Get(customerId)
+	lists, err := h.services.Cart.Get(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -51,7 +51,7 @@ func (h *Handler) getProductsFromCart(c *gin.Context){
 }
 
 func (h *Handler) deleteProductFromCart(c *gin.Context){
-	customerId, err := getUserId(c)
+	userId, err := getUserId(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -62,7 +62,7 @@ func (h *Handler) deleteProductFromCart(c *gin.Context){
 		return
 	}
 
-	err = h.services.Cart.Delete(id, customerId)
+	err = h.services.Cart.Delete(id, userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

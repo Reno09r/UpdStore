@@ -21,11 +21,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-up", h.signUp)
 		auth.POST("/sign-in", h.signIn)
 	}
-	authAdmin := router.Group("/authAdmin")
-	{
-		authAdmin.POST("/sign-up", h.signUpAdmin)
-		authAdmin.POST("/sign-in", h.signInAdmin)
-	}
 
 	api := router.Group("/api")
 	{
@@ -38,7 +33,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
         		products.GET("/", h.getAllProductsByCatalog)
     		}		
 		}
-		catalogEdit := api.Group("/catalog", h.adminIdentity)
+		catalogEdit := api.Group("/catalog", h.identity(true))
 		{
 			catalogEdit.POST("/", h.addCatalog)
 			catalogEdit.PUT("/:id", h.updateCatalog)
@@ -53,7 +48,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				products.GET("/", h.getAllProductsByManufacturer)
 			}
 		}
-		manufacturerEdit := api.Group("/manufacturer", h.adminIdentity)
+		manufacturerEdit := api.Group("/manufacturer", h.identity(true))
 		{
 			manufacturerEdit.POST("/", h.addManufacturer)
 			manufacturerEdit.PUT("/:id", h.updateManufacturer)
@@ -64,13 +59,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			products.GET("/", h.getAllProducts)
 			products.GET("/:id", h.getProductById)
 		}
-		productsEdit := api.Group("/products", h.adminIdentity)
+		productsEdit := api.Group("/products", h.identity(true))
 		{
 			productsEdit.POST("/", h.аddProduct)
 			productsEdit.PUT("/:id", h.updateProduct)
 			productsEdit.DELETE("/:id", h.deleteProduct)
 		}
-		cart := api.Group("/cart", h.userIdentity)
+		cart := api.Group("/cart", h.identity(false))
 		{
 			cart.POST("/", h.insertProductInCart)
 			cart.GET("/", h.getProductsFromCart)

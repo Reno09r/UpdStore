@@ -1,24 +1,16 @@
-CREATE TABLE usernames(
-    username_id SERIAL PRIMARY KEY,
-    username VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE customers (
-    customer_id SERIAL PRIMARY KEY,
-    customer_fname VARCHAR(100) NOT NULL,
-    customer_lname VARCHAR(100) NOT NULL,
-    username_id INTEGER NOT NULL,
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    user_fname VARCHAR(100) NOT NULL,
+    user_lname VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    role_id INTEGER NOT NULL,
     hashed_password VARCHAR(100) NOT NULL,
-    FOREIGN KEY (username_id) REFERENCES usernames(username_id)
-);
-
-CREATE TABLE admins (
-    admin_id SERIAL PRIMARY KEY,
-    admin_fname VARCHAR(100) NOT NULL,
-    admin_lname VARCHAR(100) NOT NULL,
-    username_id INTEGER NOT NULL,
-    hashed_password VARCHAR(100) NOT NULL,
-    FOREIGN KEY (username_id) REFERENCES usernames(username_id)
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
 CREATE TABLE catalogs
@@ -54,9 +46,9 @@ CREATE TABLE price_change
 CREATE TABLE purchases
 (
     purchase_id SERIAL PRIMARY KEY,
-    customer_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
     purchase_date TIMESTAMP NOT NULL,
-    FOREIGN KEY (customer_id) REFERENCES customers (customer_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
 CREATE TABLE purchase_items

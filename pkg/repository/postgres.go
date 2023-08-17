@@ -7,9 +7,8 @@ import (
 )
 
 const (
-	CustomersTable    = "customers"
-	UsernamesTable    = "usernames"
-	AdminsTable       = "admins"
+	UsersTable        = "users"
+	RolesTable        = "roles"
 	ProductsTable     = "products"
 	ManufacturerTable = "manufacturers"
 	CatalogTable      = "catalogs"

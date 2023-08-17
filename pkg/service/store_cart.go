@@ -13,14 +13,14 @@ func NewStoreCart(repo repository.Cart) *StoreCart {
 	return &StoreCart{repo: repo}
 }
 
-func (s *StoreCart) Insert(input store.Cart, customerId int) (int, error) {
-	return s.repo.Insert(input, customerId)
+func (s *StoreCart) Insert(input store.Cart, userId int) (int, error) {
+	return s.repo.Insert(input, userId)
 }
 
-func (s *StoreCart) Get(customerId int) ([]store.Cart, error) {
-	return s.repo.Get(customerId)
+func (s *StoreCart) Get(userId int) ([]store.Cart, error) {
+	return s.repo.Get(userId)
 }
 
-func (s *StoreCart) Delete(productId, customerId int) error {
-	return s.repo.Delete(productId, customerId)
+func (s *StoreCart) Delete(productId, userId int) error {
+	return s.repo.Delete(productId, userId)
 }

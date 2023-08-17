@@ -6,14 +6,13 @@ import (
 )
 
 type Authentication interface {
-	CreateCustomer(user store.User) (int, error)
-	GetCustomer(username, password string) (store.User, error)
-	CreateAdmin(user store.User) (int, error)
-	GetAdmin(username, password string) (store.User, error)
+	CreateUser(user store.User) (int, error)
+	GetUser(username, password string) (store.User, error)
 }
 
 type Authorization interface {
 	CurrentUserIsAdmin(userId int) (bool, error)
+	CurrentUserIsCustomer(userId int) (bool, error)
 }
 
 type Catalog interface {
@@ -43,9 +42,9 @@ type Product interface {
 }
 
 type Cart interface {
-	Insert(input store.Cart, customerId int) (int, error)
-	Get(customerId int) ([]store.Cart, error)
-	Delete(productId, customerId int) error
+	Insert(input store.Cart, userId int) (int, error)
+	Get(userId int) ([]store.Cart, error)
+	Delete(productId, userId int) error
 }
 
 type Repository struct {
