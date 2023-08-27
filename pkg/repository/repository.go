@@ -47,6 +47,12 @@ type Cart interface {
 	Delete(productId, userId int) error
 }
 
+type User interface {
+	Get(userId int) (store.User, error)
+	Update(userId int, input store.UpdateUserInput) error
+	Delete(userId int) error
+}
+
 type Repository struct {
 	Authentication
 	Authorization
@@ -54,6 +60,7 @@ type Repository struct {
 	Manufacturer
 	Product
 	Cart
+	User
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -64,5 +71,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Manufacturer:   NewStoreManufacturerPostgres(db),
 		Product:        NewProductPostgres(db),
 		Cart:           NewStoreCartPostgres(db),
+		User:           NewUserPostgres(db),
 	}
 }

@@ -30,7 +30,7 @@ func NewAuthService(repo repository.Authentication ) *AuthService{
 }
 
 func(s *AuthService) CreateUser(user store.User) (int, error){
-	user.Password = generatePasswordHash(user.Password)
+	user.Password = GeneratePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }
 
@@ -68,7 +68,7 @@ func (s *AuthService) ParseToken(accessToken string) (int, error){
 	return claims.UserId, nil
 }
 
-func generatePasswordHash(password string) string{
+func GeneratePasswordHash(password string) string{
 	hashed_password, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		log.Panicln("Failed to generate password hash:", err)

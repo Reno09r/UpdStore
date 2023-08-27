@@ -64,9 +64,9 @@ func (r *StoreCatalogPostgres) Delete(CatalogId int) error {
 }
 
 func (r *StoreCatalogPostgres) Update(CatalogId int, input store.UpdateInput) error {
-	var manufacturer store.Catalog
+	var catalog store.Catalog
 	queryCheck := fmt.Sprintf("SELECT * FROM %s WHERE catalog_id = $1", CatalogTable)
-	err := r.db.Get(&manufacturer, queryCheck, CatalogId)
+	err := r.db.Get(&catalog, queryCheck, CatalogId)
 	if err != nil {
 		return errors.New("Update by non-existent CatalogId")
 	}

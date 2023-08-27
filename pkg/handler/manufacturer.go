@@ -96,4 +96,3 @@ func (h *Handler) deleteManufacturer(c *gin.Context) {
 		Status: "ok",
 	})
 }
-

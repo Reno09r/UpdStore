@@ -10,10 +10,10 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
-	userCtx = "userId"
+	userCtx             = "userId"
 )
 
-func (h *Handler)identity(isAdminRequired bool) gin.HandlerFunc {
+func (h *Handler) identity(isAdminRequired bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader(authorizationHeader)
 		if header == "" {
@@ -36,6 +36,13 @@ func (h *Handler)identity(isAdminRequired bool) gin.HandlerFunc {
 			return
 		}
 
+		_, err = h.services.User.Get(ID)
+		if err != nil {
+			newErrorResponse(c, http.StatusUnauthorized, "User has no exist")
+			c.Abort()
+			return
+		}
+
 		if isAdminRequired {
 			isAdmin, err := h.services.Authorization.CurrentUserIsAdmin(ID)
 			if err != nil {
@@ -49,8 +56,7 @@ func (h *Handler)identity(isAdminRequired bool) gin.HandlerFunc {
 				c.Abort()
 				return
 			}
-		} else 
-		{
+		} else {
 			isCustomer, err := h.services.Authorization.CurrentUserIsCustomer(ID)
 			if err != nil {
 				newErrorResponse(c, http.StatusInternalServerError, err.Error())
