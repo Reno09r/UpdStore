@@ -182,6 +182,12 @@ func (r *ProductPostgres) Update(productId int, input store.UpdateProductInput) 
 		if err != nil {
 			return err
 		}
+		query := "UPDATE purchase_items SET product_price = $1 WHERE product_id =$2"
+		_, err = tx.Exec(query, *input.Price, productId)
+		if err != nil {
+			return err
+		}
+
 	}
 
 	return err

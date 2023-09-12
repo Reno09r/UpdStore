@@ -6,7 +6,7 @@ CREATE TABLE roles (
 INSERT INTO
     roles (role_name)
 VALUES
-    ('сustomer'),
+    ('customer'),
     ('admin');
 
 CREATE TABLE users (
@@ -57,7 +57,17 @@ CREATE TABLE purchase_items (
     product_id INTEGER NOT NULL,
     product_count INTEGER NOT NULL,
     product_price NUMERIC(9, 2) NOT NULL,
-    CONSTRAINT PK_PURCHASE_ITEMS PRIMARY KEY (purchase_id, product_id),
     FOREIGN KEY (product_id) REFERENCES products (product_id),
     FOREIGN KEY (purchase_id) REFERENCES purchases (purchase_id)
+);
+
+CREATE TABLE buys(
+    buy_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    product_count INTEGER NOT NULL,
+    buy_date TIMESTAMP NOT NULL,
+    full_price NUMERIC(9, 2) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (product_id) REFERENCES products (product_id)
 );

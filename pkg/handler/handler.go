@@ -76,6 +76,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			cart.GET("/", h.getProductsFromCart)
 			cart.DELETE("/:id", h.deleteProductFromCart)
 		}
+		buy := api.Group("/buy", h.identity(false))
+		{
+			buy.GET("/", h.BuyedProducts)
+			buy.POST("/", h.ConfirmBuy)
+		}
 	}
 	return router
 }

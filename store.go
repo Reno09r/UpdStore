@@ -1,6 +1,9 @@
 package store
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Product struct {
 	ID               int     `json:"id" db:"product_id"`
@@ -12,8 +15,16 @@ type Product struct {
 
 type Cart struct {
 	PurchaseID int `json:"purchase_id" db:"purchase_id"`
-	Product
+	Product 
 	Quantity int `json:"count" db:"product_count"`
+}
+
+type BuyedProducts struct {
+	BuyID int `json:"id" db:"buy_id"`
+	TimeBuy time.Time `json:"time_buy" db:"buy_date"`
+	Product
+	Quantity  int     `json:"count" db:"product_count"`
+	FullPrice float64 `json:"fullprice" db:"full_price"`
 }
 
 type Catalog struct {

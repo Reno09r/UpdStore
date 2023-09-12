@@ -47,6 +47,11 @@ type Cart interface {
 	Delete(productId, userId int) error
 }
 
+type Buy interface {
+	Confirm(input store.UserCardInput, userId int) error
+	BuyedProducts(userId int) ([]store.BuyedProducts, error)
+}
+
 type User interface {
 	Get(userId int) (store.User, error)
 	Update(userId int, input store.UpdateUserInput) error
@@ -61,6 +66,7 @@ type Repository struct {
 	Product
 	Cart
 	User
+	Buy
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -72,5 +78,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Product:        NewProductPostgres(db),
 		Cart:           NewStoreCartPostgres(db),
 		User:           NewUserPostgres(db),
+		Buy: 			NewStoreBuyPostgres(db),
 	}
 }

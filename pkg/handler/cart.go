@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type getAllProductsInCartResponse struct {
+	Data []store.Cart `json:"data"`
+}
+
 func (h *Handler) insertProductInCart(c *gin.Context){
 	var input store.Cart
 	userId, err := getUserId(c)
@@ -30,9 +34,6 @@ func (h *Handler) insertProductInCart(c *gin.Context){
     })
 }
 
-type getAllProductsInCartResponse struct {
-	Data []store.Cart `json:"data"`
-}
 
 func (h *Handler) getProductsFromCart(c *gin.Context){
 	userId, err := getUserId(c)

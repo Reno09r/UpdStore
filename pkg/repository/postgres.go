@@ -13,6 +13,7 @@ const (
 	ManufacturerTable = "manufacturers"
 	CatalogTable      = "catalogs"
 	PriceTable        = "price_change"
+	BuysTable         = "buys"
 )
 
 type Config struct {

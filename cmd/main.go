@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/Reno09r/Store"
+	store "github.com/Reno09r/Store"
 	"github.com/Reno09r/Store/pkg/handler"
 	"github.com/Reno09r/Store/pkg/repository"
 	"github.com/Reno09r/Store/pkg/service"
@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func main(){
+func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("error initializating confings: %s", err.Error())
@@ -22,12 +22,12 @@ func main(){
 		logrus.Fatalf("error initializating confings: %s", err.Error())
 	}
 	db, err := repository.NewPostgresDB(repository.Config{
-		Host: viper.GetString("db.host"),
-		Port: viper.GetString("db.port"),
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
 		Password: os.Getenv("DB_PASSWORD"),
-		DBName: viper.GetString("db.dbname"),
-		SSLMode: viper.GetString("db.sslmode"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("db.sslmode"),
 	})
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())

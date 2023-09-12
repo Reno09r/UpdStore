@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS buys;
 DROP TABLE IF EXISTS price_change;
 DROP TABLE IF EXISTS purchase_items;
 DROP TABLE IF EXISTS purchases;

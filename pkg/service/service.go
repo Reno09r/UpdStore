@@ -48,6 +48,11 @@ type Cart interface {
 	Delete(productId, userId int) error
 }
 
+type Buy interface {
+	Confirm(input store.UserCardInput, userId int) error
+	BuyedProducts(userId int) ([]store.BuyedProducts, error)
+}
+
 type User interface {
 	Get(userId int) (store.User, error)
 	Update(userId int, input store.UpdateUserInput) error
@@ -62,6 +67,7 @@ type Service struct {
 	Product
 	Cart
 	User
+	Buy
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -73,5 +79,6 @@ func NewService(repos *repository.Repository) *Service {
 		Product:        NewStoreProduct(repos.Product),
 		Cart:           NewStoreCart(repos.Cart),
 		User: 			NewStoreUser(repos.User),
+		Buy: 			NewStoreBuy(repos.Buy),
 	}
 }
