@@ -11,6 +11,10 @@ type Authentication interface {
 	ParseToken(token string) (int, error)
 }
 
+type Logs interface {
+	PublishLog(exchangeName, logType, msg string) error
+}
+
 type Authorization interface {
 	CurrentUserIsAdmin(userId int) (bool, error)
 	CurrentUserIsCustomer(userId int) (bool, error)
@@ -50,7 +54,7 @@ type Cart interface {
 
 type Buy interface {
 	Confirm(input store.UserCardInput, userId int) error
-	BuyedProducts(userId int) ([]store.BuyedProducts, error)
+	BoughtProducts(userId int) ([]store.BoughtProducts, error)
 }
 
 type User interface {
@@ -72,13 +76,13 @@ type Service struct {
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		Authentication: NewAuthService(repos.Authentication),
+		Authentication: NewAuthService(repos.Authentication, repos.Logs),
 		Authorization:  NewAuthorizationService(repos.Authorization),
-		Catalog:        NewStoreCatalog(repos.Catalog),
-		Manufacturer:   NewStoreManufacturer(repos.Manufacturer),
-		Product:        NewStoreProduct(repos.Product),
-		Cart:           NewStoreCart(repos.Cart),
-		User: 			NewStoreUser(repos.User),
-		Buy: 			NewStoreBuy(repos.Buy),
+		Catalog:        NewStoreCatalog(repos.Catalog, repos.Logs),
+		Manufacturer:   NewStoreManufacturer(repos.Manufacturer, repos.Logs),
+		Product:        NewStoreProduct(repos.Product, repos.Logs),
+		Cart:           NewStoreCart(repos.Cart, repos.Logs),
+		User: 			NewStoreUser(repos.User, repos.Logs),
+		Buy: 			NewStoreBuy(repos.Buy, repos.Logs),
 	}
 }

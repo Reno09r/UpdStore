@@ -18,10 +18,10 @@ func main() {
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("error initializating confings: %s", err.Error())
 	}
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("c:\\Users\\Reno\\Desktop\\My\\Projects\\Go\\UpdStore\\.env"); err != nil {
 		logrus.Fatalf("error initializating confings: %s", err.Error())
 	}
-	db, err := repository.NewPostgresDB(repository.Config{
+	db, err := repository.NewPostgresDB(repository.DBConfig{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
@@ -29,10 +29,16 @@ func main() {
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
+	rmq, err := repository.NewRabbitMQ(repository.RabbitMQConfig{
+		Host: viper.GetString("rabbitmq.host"),
+		Port: viper.GetString("rabbitmq.port"),
+		Username: viper.GetString("rabbitmq.username"),
+		Password: os.Getenv("RABBITMQ_PASSWORD"),
+	})
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
-	repos := repository.NewRepository(db)
+	repos := repository.NewRepository(db, rmq)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
@@ -43,7 +49,7 @@ func main() {
 }
 
 func initConfig() error {
-	viper.AddConfigPath("configs")
+	viper.AddConfigPath("c:\\Users\\Reno\\Desktop\\My\\Projects\\Go\\UpdStore\\configs")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
 }

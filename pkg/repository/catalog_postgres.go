@@ -24,15 +24,14 @@ func (r *StoreCatalogPostgres) Create(catalog store.Catalog) (int, error) {
 		return 0, err
 	}
 
-	var id int
 	createcatalogQuery := fmt.Sprintf("INSERT INTO %s (catalog_name) VALUES ($1) RETURNING catalog_id", CatalogTable)
 	row := tx.QueryRow(createcatalogQuery, catalog.Title)
-	if err := row.Scan(&id); err != nil {
+	if err := row.Scan(&catalog.Id); err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
-	return id, tx.Commit()
+	return catalog.Id, tx.Commit()
 }
 
 func (r *StoreCatalogPostgres) GetAll() ([]store.Catalog, error) {

@@ -1,4 +1,2 @@
 .env
-Dockerfile
-docker-compose.yaml
-wait-for-postgres.sh
+

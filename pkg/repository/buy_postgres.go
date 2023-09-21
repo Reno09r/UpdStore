@@ -59,8 +59,8 @@ func (r *StoreBuyPostgres) Confirm(input store.UserCardInput, userId int) error 
 	return err
 }
 
-func (r *StoreBuyPostgres) BuyedProducts(userId int) ([]store.BuyedProducts, error) {
-	var buyedProducts []store.BuyedProducts
+func (r *StoreBuyPostgres) BoughtProducts(userId int) ([]store.BoughtProducts, error) {
+	var buyedProducts []store.BoughtProducts
 	query := fmt.Sprintf(`SELECT
     p.product_name,
     m.manufacturer_name,

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -13,45 +14,57 @@ import (
 
 const (
 	signingKey = "grkjk#4#%35FSFJ1ja#4353KSFjH"
-	tokenTTL = 24 * time.Hour
+	tokenTTL   = 24 * time.Hour
 )
 
-type tokenClaims struct{
+type tokenClaims struct {
 	jwt.StandardClaims
 	UserId int `json:"user_id"`
 }
 
 type AuthService struct {
-	repo repository.Authentication 
+	repo repository.Authentication
+	logs repository.Logs
 }
 
-func NewAuthService(repo repository.Authentication ) *AuthService{
-	return &AuthService{repo: repo}
+func NewAuthService(repo repository.Authentication, logs repository.Logs) *AuthService {
+	return &AuthService{repo: repo, logs: logs}
 }
 
-func(s *AuthService) CreateUser(user store.User) (int, error){
+func (s *AuthService) CreateUser(user store.User) (int, error) {
 	user.Password = GeneratePasswordHash(user.Password)
-	return s.repo.CreateUser(user)
+	id, err := s.repo.CreateUser(user)
+	if err != nil {
+		s.logs.PublishLog(ToLogs, Warning, UserRegisterFailAttempt+err.Error())
+		return 0, err
+	}
+	err = s.logs.PublishLog(ToLogs, Info, fmt.Sprintf(UserRegisterSuccessful, id, user.Fname, user.Lname, user.Username))
+	return id, err
 }
 
-func (s *AuthService) GenerateToken(username, password string) (string, error){
+func (s *AuthService) GenerateToken(username, password string) (string, error) {
 	user, err := s.repo.GetUser(username, password)
-	if err != nil{
+	if err != nil {
+		s.logs.PublishLog(ToLogs, Warning, UserLoginFailAttempt+err.Error())
+		return "", err
+	}
+	err = s.logs.PublishLog(ToLogs, Info, fmt.Sprintf(UserLoginSuccessful, username))
+	if err != nil {
 		return "", err
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(tokenTTL).Unix(),
-		IssuedAt: time.Now().Unix(),
+			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
 		},
 		user.Id,
 	})
 	return token.SignedString([]byte(signingKey))
 }
 
-func (s *AuthService) ParseToken(accessToken string) (int, error){
+func (s *AuthService) ParseToken(accessToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok{
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
 
@@ -61,14 +74,14 @@ func (s *AuthService) ParseToken(accessToken string) (int, error){
 		return 0, err
 	}
 	claims, ok := token.Claims.(*tokenClaims)
-	if !ok{
+	if !ok {
 		return 0, errors.New("token claims ate not of type *tokenClaims")
 	}
 
 	return claims.UserId, nil
 }
 
-func GeneratePasswordHash(password string) string{
+func GeneratePasswordHash(password string) string {
 	hashed_password, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		log.Panicln("Failed to generate password hash:", err)
@@ -76,4 +89,3 @@ func GeneratePasswordHash(password string) string{
 	return string(hashed_password)
 
 }
-

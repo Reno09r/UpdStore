@@ -3,12 +3,18 @@ package repository
 import (
 	"github.com/Reno09r/Store"
 	"github.com/jmoiron/sqlx"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type Authentication interface {
 	CreateUser(user store.User) (int, error)
 	GetUser(username, password string) (store.User, error)
 }
+
+type Logs interface {
+	PublishLog(exchangeName, logType, msg string) error
+}
+
 
 type Authorization interface {
 	CurrentUserIsAdmin(userId int) (bool, error)
@@ -49,7 +55,7 @@ type Cart interface {
 
 type Buy interface {
 	Confirm(input store.UserCardInput, userId int) error
-	BuyedProducts(userId int) ([]store.BuyedProducts, error)
+	BoughtProducts(userId int) ([]store.BoughtProducts, error)
 }
 
 type User interface {
@@ -60,6 +66,7 @@ type User interface {
 
 type Repository struct {
 	Authentication
+	Logs
 	Authorization
 	Catalog
 	Manufacturer
@@ -69,9 +76,10 @@ type Repository struct {
 	Buy
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+func NewRepository(db *sqlx.DB, rmq *amqp.Connection) *Repository {
 	return &Repository{
 		Authentication: NewAuthPostgresSQL(db),
+		Logs: 			NewLogsRabbitMQ(rmq),
 		Authorization:  NewAuthorizationPostgresSQL(db),
 		Catalog:        NewStoreCatalogPostgres(db),
 		Manufacturer:   NewStoreManufacturerPostgres(db),

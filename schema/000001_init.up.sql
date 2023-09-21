@@ -42,14 +42,14 @@ CREATE TABLE price_change (
     product_id INTEGER NOT NULL,
     date_price_change TIMESTAMP NOT NULL,
     new_price NUMERIC(9, 2) NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products (product_id)
+    FOREIGN KEY (product_id) REFERENCES products (product_id) ON DELETE CASCADE
 );
 
 CREATE TABLE purchases (
     purchase_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     purchase_date TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (user_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE purchase_items (
@@ -57,8 +57,8 @@ CREATE TABLE purchase_items (
     product_id INTEGER NOT NULL,
     product_count INTEGER NOT NULL,
     product_price NUMERIC(9, 2) NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products (product_id),
-    FOREIGN KEY (purchase_id) REFERENCES purchases (purchase_id)
+    FOREIGN KEY (product_id) REFERENCES products (product_id) ON DELETE CASCADE,
+    FOREIGN KEY (purchase_id) REFERENCES purchases (purchase_id) ON DELETE CASCADE
 );
 
 CREATE TABLE buys(
@@ -68,6 +68,6 @@ CREATE TABLE buys(
     product_count INTEGER NOT NULL,
     buy_date TIMESTAMP NOT NULL,
     full_price NUMERIC(9, 2) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (product_id) REFERENCES products (product_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (product_id) ON DELETE CASCADE
 );

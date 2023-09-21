@@ -19,7 +19,7 @@ type Cart struct {
 	Quantity int `json:"count" db:"product_count"`
 }
 
-type BuyedProducts struct {
+type BoughtProducts struct {
 	BuyID int `json:"id" db:"buy_id"`
 	TimeBuy time.Time `json:"time_buy" db:"buy_date"`
 	Product

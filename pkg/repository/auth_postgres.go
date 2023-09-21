@@ -29,20 +29,19 @@ func (r *AuthpostgresSQL) CreateUser(user store.User) (int, error) {
 	if err := row.Scan(&user.Role.Id); err != nil {
 		return 0, err
 	}
-	var id int
 	insertUserQuery = fmt.Sprintf(`
 		INSERT INTO %s (user_fname, user_lname, username, hashed_password, role_id) 
 		VALUES ($1, $2, $3, $4, $5) 
 		RETURNING user_id`, UsersTable)
 	row = tx.QueryRow(insertUserQuery, user.Fname, user.Lname, user.Username, user.Password, user.Role.Id)
-	if err := row.Scan(&id); err != nil {
+	if err := row.Scan(&user.Id); err != nil {
 		return 0, err
 	}
 	err = tx.Commit()
 	if err != nil {
 		return 0, err
 	}
-	return int(id), nil
+	return int(user.Id), nil
 }
 
 func (r *AuthpostgresSQL) GetUser(username, password string) (store.User, error) {

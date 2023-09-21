@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type getAllBuyedProductsResponse struct{
-	Data []store.BuyedProducts `json:"data"`
+type getAllBoughtProductsResponse struct{
+	Data []store.BoughtProducts `json:"data"`
 }
 
 func (h *Handler) ConfirmBuy(c *gin.Context){
@@ -39,12 +39,12 @@ func (h *Handler) BuyedProducts(c *gin.Context){
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	lists, err := h.services.Buy.BuyedProducts(userId)
+	lists, err := h.services.Buy.BoughtProducts(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, getAllBuyedProductsResponse{
+	c.JSON(http.StatusOK, getAllBoughtProductsResponse{
 		Data: lists,
 	})
 }

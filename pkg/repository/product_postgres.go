@@ -103,6 +103,16 @@ func (r *ProductPostgres) Delete(productId int) error {
 	if err != nil {
 		return errors.New("deletion by non-existent product id")
 	}
+	var id int
+	queryCheck = "SELECT purchase_id FROM purchases WHERE product_id = $1"
+	err = r.db.Get(&id, queryCheck, productId)
+	if err != nil {
+		query := "DELETE FROM purchases WHERE purchase_id  = $1"
+		_, err = r.db.Exec(query, productId)
+		if err != nil {
+			return err
+		}
+	}
 	query := fmt.Sprintf("DELETE FROM %s WHERE product_id  = $1", PriceTable)
 	_, err = r.db.Exec(query, productId)
 	if err != nil {
